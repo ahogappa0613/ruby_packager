@@ -1,0 +1,80 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+
+
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'fs_cli'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=fs_cli"
+        ],
+        "filter": {
+          "name": "fs_cli",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'fs_cli'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=fs_cli",
+          "--package=fs_cli"
+        ],
+        "filter": {
+          "name": "fs_cli",
+          "kind": "bin"
+        }
+      },
+      "args": ["--start=./ruby_src/test.rb"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'fs_cli'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=fs_cli",
+          "--package=fs_cli"
+        ],
+        "filter": {
+          "name": "fs_cli",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "sample binary",
+      "program": "${workspaceFolder}/sample_bin",
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "sample cli",
+      "program": "${workspaceFolder}/target/debug/fs_cli",
+      "args": [".", "ruby_src/", "--start=./ruby_src/test.rb"]
+    }
+  ]
+}

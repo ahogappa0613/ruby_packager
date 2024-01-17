@@ -1,0 +1,23 @@
+{
+  "files.associations": {
+    "config": "toml",
+    "ruby.h": "c",
+    "vm_debug.h": "c",
+    "interpreter.h": "c",
+    "iseq.h": "c",
+    "e_os2.h": "c",
+    "ossl.h": "c",
+    "crypto.h": "c",
+    "config.h": "c",
+    "string.h": "c",
+    "error.h": "c",
+    "stdbool.h": "c",
+    "*.rbinc": "c"
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp"
+  },
+  "rubyLsp.formatter": "auto",
+  "C_Cpp.errorSquiggles": "disabled",
+  "rust-analyzer.checkOnSave": true
+}
