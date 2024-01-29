@@ -4,9 +4,6 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-
-
-
     {
       "type": "lldb",
       "request": "launch",
@@ -41,7 +38,9 @@
           "kind": "bin"
         }
       },
-      "args": ["--start=./ruby_src/test.rb"],
+      "args": [
+        "--start=./ruby_src/test.rb"
+      ],
       "cwd": "${workspaceFolder}"
     },
     {
@@ -67,14 +66,19 @@
       "type": "lldb",
       "request": "launch",
       "name": "sample binary",
-      "program": "${workspaceFolder}/sample_bin",
+      "program": "${workspaceFolder}/bin",
     },
     {
       "type": "lldb",
       "request": "launch",
       "name": "sample cli",
       "program": "${workspaceFolder}/target/debug/fs_cli",
-      "args": [".", "ruby_src/", "--start=./ruby_src/test.rb"]
+      "args": [
+        "/workspaces/ruby_packager",
+        "ruby_src/",
+        "/usr/local/rvm/rubies/ruby-3.2.2/lib/ruby/site_ruby/3.2.0",
+        "--start=./ruby_src/test.rb"
+      ]
     }
   ]
 }

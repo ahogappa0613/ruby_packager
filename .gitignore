@@ -2,4 +2,5 @@
 /dest_dir
 *.o
 firedbg
- 
+bin
+sample.csv
