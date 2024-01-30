@@ -16,8 +16,8 @@ RUBY_SRC = ruby_src/test.rb
 all: $(OUTPUT)
 
 $(OUTPUT): main.c $(RUBY_LIB) $(FS_O) $(FS_LIB)
-		gcc -v -Wall -static main.c $(OBJS) $(FS_LIB) $(RUBY_HDRS) $(EXT_OBJS) -lz -lrt -lgmp -ldl -lcrypt -lm -lpthread -lffi -lssl -lcrypto -lyaml -o $@
-
+		gcc -Wall -no-pie main.c $(OBJS) $(FS_LIB) $(RUBY_HDRS) $(EXT_OBJS) -Wl,-Bstatic -lz -lrt -lgmp -ldl -lcrypt -lpthread -lffi -lssl -lcrypto -lyaml -Wl,-Bdynamic -lm -o $@
+# gcc -Wall -no-pie main.c *.o ... -Wl,-Bstatic -lz -lrt -lgmp -ldl -lcrypt -lpthread -lffi -lssl -lcrypto -lyaml -Wl,-Bdynamic -lm -o bin
 # $(OUTPUT_O): main.o $(RUBY_LIB) $(FS_O) $(FS_LIB)
 # 		gcc -c -Wall $(OBJS) $(FS_LIB) $(RUBY_HDRS) $(EXT_OBJS) -lz -lrt -lgmp -ldl -lcrypt -lm -lpthread -lffi -lssl -lcrypto -lyaml -o $@
 
