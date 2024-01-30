@@ -5,12 +5,15 @@
 
 extern char *get_patch_require(void);
 extern void ruby_init_ext(const char *name, void (*init)(void));
-extern void Init_patch_require(void);
+extern void Init_fs(void);
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
+  ruby_sysinit(&argc, &argv);
+  RUBY_INIT_STACK;
   ruby_init();
-  ruby_init_ext("patch_require.so", Init_patch_require);
+
+  Init_fs();
 
   char *options[] = {"-v", "-e", get_patch_require()};
   void *node = ruby_options(3, options);

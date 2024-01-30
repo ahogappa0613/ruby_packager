@@ -1,3 +1,3 @@
-require 'ruby_src/dir/test1'
+require './ruby_src/dir/test1'
 
 p 'test2'
