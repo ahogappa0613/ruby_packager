@@ -3,14 +3,14 @@ OUTPUT_O = sample.o
 OBJS = *.o
 FS_O = fs.o
 FS_CLI = target/debug/fs_cli
-RUBY_HDRS = $(shell pkg-config --cflags /workspaces/ruby_packager/dest_dir/lib/pkgconfig/ruby.pc)
+RUBY_HDRS = $(shell pkg-config --cflags dest_dir/lib/pkgconfig/ruby.pc)
 # RUBY_LIBS = $(shell pkg-config --variable=LIBRUBYARG_STATIC /workspaces/ruby_packager/dest_dir/lib/pkgconfig/ruby.pc)
-RUBY_LIB = /workspaces/ruby_packager/dest_dir/lib/libruby-static.a
-RUBY_CONF = /workspaces/ruby_packager/ruby/configure
-FS_LIB = /workspaces/ruby_packager/target/debug/libfs_lib.a
+RUBY_LIB = dest_dir/lib/libruby-static.a
+RUBY_CONF = ruby/configure
+FS_LIB = target/debug/libfs_lib.a
 EXTS = $(shell ruby exts_dirs.rb)
 EXT_OBJS = $(shell ruby exts.rb)
-LOAD_PATHS = $(shell ruby -e 'puts $$LOAD_PATH.join(" ")')
+LOAD_PATHS = $(shell dest_dir/bin/ruby -e 'puts $$LOAD_PATH.join(" ")')
 RUBY_SRC = ruby_src/test.rb
 
 all: $(OUTPUT)
@@ -19,7 +19,7 @@ $(OUTPUT): main.c $(RUBY_LIB) $(FS_O) $(FS_LIB)
 		gcc -Wall -no-pie main.c $(OBJS) $(FS_LIB) $(RUBY_HDRS) $(EXT_OBJS) -Wl,-Bstatic -lz -lrt -lgmp -ldl -lcrypt -lpthread -lffi -lssl -lcrypto -lyaml -Wl,-Bdynamic -lm -o $@
 
 $(FS_O): $(FS_CLI) $(RUBY_SRC)
-		$(FS_CLI) /workspaces/ruby_packager ruby_src/ $(LOAD_PATHS) --start=$(RUBY_SRC)
+		$(FS_CLI) $(PWD) ruby_src/ $(LOAD_PATHS) --start=$(RUBY_SRC)
 
 $(FS_CLI) $(FS_LIB): ./fs_cli/src/*.rs ./fs_cli/src/*.rb ./fs_lib/src/*.rs
 		cargo build -v
@@ -28,7 +28,7 @@ $(RUBY_LIB): $(RUBY_CONF)
 		$(MAKE) V=1 -C ruby -i install
 
 $(RUBY_CONF):
-		cd ruby && ./autogen.sh && ./configure --prefix=/workspaces/ruby_packager/dest_dir --disable-install-doc --disable-install-rdoc --disable-install-capi --with-static-linked-ext --with-ext=$(EXTS) --with-ruby-pc=ruby.pc
+		cd ruby && ./autogen.sh && ./configure --prefix=../dest_dir --disable-install-doc --disable-install-rdoc --disable-install-capi --with-static-linked-ext --with-ext=$(EXTS) --with-ruby-pc=ruby.pc
 
 PHONY: clean clear
 clean:
@@ -37,9 +37,9 @@ clean:
 		cargo clean
 
 clear: clean
-		$(RM) -r /workspaces/ruby_packager/dest_dir
+		$(RM) -r dest_dir
+		$(RM) $(RUBY_CONF)
 		$(MAKE) -C ruby clean
-		$(RM) ruby/configure
 
 # --with-static-linked-ext --with-ext=$(EXTS)
 # ./configure --prefix=/workspaces/ruby_packager/dest_dir --disable-install-doc --disable-install-rdoc --disable-install-capi --with-static-linked-ext --with-ext=Setup
