@@ -1,22 +1,24 @@
 OUTPUT = bin
-OUTPUT_O = sample.o
 OBJS = *.o
 FS_O = fs.o
 FS_CLI = target/debug/fs_cli
 RUBY_HDRS = $(shell pkg-config --cflags dest_dir/lib/pkgconfig/ruby.pc)
-# RUBY_LIBS = $(shell pkg-config --variable=LIBRUBYARG_STATIC /workspaces/ruby_packager/dest_dir/lib/pkgconfig/ruby.pc)
 RUBY_LIB = dest_dir/lib/libruby-static.a
 RUBY_CONF = ruby/configure
 FS_LIB = target/debug/libfs_lib.a
-EXTS = $(shell ruby exts_dirs.rb)
-EXT_OBJS = $(shell ruby exts.rb)
-LOAD_PATHS = $(shell dest_dir/bin/ruby -e 'puts $$LOAD_PATH.join(" ")')
 RUBY_SRC = ruby_src/test.rb
+EXTS = $(shell ruby -e'puts Dir.glob("ruby/ext/**/extconf.rb").reject { _1 =~ /-test-/ }.reject { _1 =~ /win32/ }.map { File.dirname(_1) }.map { _1.split("ruby/ext/")[1] }.join(",")')
+EXT_OBJS = $(shell ruby -e'puts ["ruby/ext/extinit.o", "ruby/enc/encinit.o", *Dir.glob("ruby/ext/**/*.a"), *Dir.glob("ruby/enc/**/*.a")].join(" ")')
+LOAD_PATHS = $(shell dest_dir/bin/ruby -e 'puts $$LOAD_PATH.join(" ")')
+AUTOXXX = $(shell ruby -e'puts File.exist?("ruby/autogen.sh") ? "./autogen.sh" : "autoconf"')
+MAINLIB = $(shell pkg-config --variable=MAINLIBS dest_dir/lib/pkgconfig/ruby.pc)
+EXTLIBS = $(shell ruby -e'puts Dir.glob("ruby/ext/**/exts.mk").flat_map { File.read(_1).scan(/EXTLIBS = (.*)/) }.join(" ")')
+LIBS = $(shell ruby -e'dyn,static=%w[$(MAINLIB) $(EXTLIBS)].uniq.partition { _1 =~ /-lpthread/ || _1 =~ /-ldl/ || _1 =~ /-lm/ };dyn.unshift "-Wl,-Bdynamic";static.unshift "-Wl,-Bstatic";puts static.join(" ") + " " + dyn.join(" ")')
 
 all: $(OUTPUT)
 
 $(OUTPUT): main.c $(RUBY_LIB) $(FS_O) $(FS_LIB)
-		gcc -Wall -no-pie main.c $(OBJS) $(FS_LIB) $(RUBY_HDRS) $(EXT_OBJS) -Wl,-Bstatic -lz -lrt -lgmp -ldl -lcrypt -lpthread -lffi -lssl -lcrypto -lyaml -Wl,-Bdynamic -lm -o $@
+		gcc -Wall main.c $(OBJS) $(RUBY_HDRS) $(EXT_OBJS) $(FS_LIB) $(LIBS) -o $@
 
 $(FS_O): $(FS_CLI) $(RUBY_SRC)
 		$(FS_CLI) $(PWD) ruby_src/ $(LOAD_PATHS) --start=$(RUBY_SRC)
@@ -28,7 +30,7 @@ $(RUBY_LIB): $(RUBY_CONF)
 		$(MAKE) V=1 -C ruby -i install
 
 $(RUBY_CONF):
-		cd ruby && ./autogen.sh && ./configure --prefix=../dest_dir --disable-install-doc --disable-install-rdoc --disable-install-capi --with-static-linked-ext --with-ext=$(EXTS) --with-ruby-pc=ruby.pc
+		cd ruby && $(AUTOXXX) && ./configure --prefix=$(PWD)/dest_dir --disable-install-doc --disable-install-rdoc --disable-install-capi --with-static-linked-ext --with-ext=$(EXTS) --with-ruby-pc=ruby.pc
 
 PHONY: clean clear
 clean:
@@ -40,9 +42,3 @@ clear: clean
 		$(RM) -r dest_dir
 		$(RM) $(RUBY_CONF)
 		$(MAKE) -C ruby clean
-
-# --with-static-linked-ext --with-ext=$(EXTS)
-# ./configure --prefix=/workspaces/ruby_packager/dest_dir --disable-install-doc --disable-install-rdoc --disable-install-capi --with-static-linked-ext --with-ext=Setup
-# ./configure --prefix=/workspaces/ruby_packager/dest_dir --disable-install-doc --disable-install-rdoc --disable-install-capi --with-static-linked-ext --with-setup=Setup
-#  ext/bigdecimal/bigdecimal.a ext/cgi/escape/escape.a ext/continuation/continuation.a ext/coverage/coverage.a ext/date/date_core.a ext/digest/digest.a ext/digest/bubblebabble/bubblebabble.a ext/digest/md5/md5.a ext/digest/rmd160/rmd160.a ext/digest/sha1/sha1.a ext/digest/sha2/sha2.a ext/etc/etc.a ext/fcntl/fcntl.a ext/io/console/console.a ext/io/nonblock/nonblock.a ext/io/wait/wait.a ext/json/generator/generator.a ext/json/parser/parser.a ext/monitor/monitor.a ext/nkf/nkf.a ext/objspace/objspace.a ext/openssl/openssl.a ext/pathname/pathname.a ext/psych/psych.a ext/rbconfig/sizeof/sizeof.a ext/ripper/ripper.a ext/stringio/stringio.a ext/strscan/strscan.a ext/zlib/zlib.a enc/encinit.o enc/libenc.a enc/libtrans.a
-# gcc -v -Wall main.c -static-libgcc $(OBJS) $(FS_LIB) $(RUBY_HDRS) $(EXT_OBJS) -Wl,-Bdynamic,-ldl,-lpthread,-lrt,-Bstatic,-lz,-lgmp,-lcrypt,-lm,-lffi,-lssl,-lcrypto,-lyaml -o $@
