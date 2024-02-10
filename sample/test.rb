@@ -23,7 +23,3 @@ rows = db.execute <<-SQL
     val int
   );
 SQL
-
-require 'byebug'
-
-byebug
