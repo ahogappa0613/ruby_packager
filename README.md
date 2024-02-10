@@ -6,7 +6,7 @@ This repository is a project to make any version of Ruby and any Ruby script int
 
 # Usage
 
-Basically, the `make` command is all you need to complete the process. Running `make` will generate a binary that combines the Ruby scripts under the `ruby_src/` directory with the Ruby generated in `dest_dir`.
+Basically, the `make` command is all you need to complete the process. Running `make` will generate a binary that combines the Ruby scripts under the `sample/` directory with the Ruby generated in `dest_dir`.
 
 The operation has been tested on M1 Linux and x86_64 Linux.
 

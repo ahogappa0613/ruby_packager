@@ -2,10 +2,11 @@ OUTPUT = bin
 OBJS = *.o
 FS_O = fs.o
 FS_CLI = target/debug/fs_cli
+SAMPLE_DIR = sample
 RUBY_HDRS = $(shell pkg-config --cflags dest_dir/lib/pkgconfig/ruby.pc)
 RUBY_LIB = dest_dir/lib/libruby-static.a
 RUBY_CONF = ruby/configure
-FS_LIB = target/debug/libfs_lib.a
+RUBY_SRC = $(SAMPLE_DIR)/test.rb
 RUBY_SRC = ruby_src/test.rb
 EXTS = $(shell ruby -e'puts Dir.glob("ruby/ext/**/extconf.rb").reject { _1 =~ /-test-/ }.reject { _1 =~ /win32/ }.map { File.dirname(_1) }.map { _1.split("ruby/ext/")[1] }.join(",")')
 EXT_OBJS = $(shell ruby -e'puts ["ruby/ext/extinit.o", "ruby/enc/encinit.o", *Dir.glob("ruby/ext/**/*.a"), *Dir.glob("ruby/enc/**/*.a")].join(" ")')
@@ -21,7 +22,7 @@ $(OUTPUT): main.c $(RUBY_LIB) $(FS_O) $(FS_LIB)
 		gcc -Wall main.c $(OBJS) $(RUBY_HDRS) $(EXT_OBJS) $(FS_LIB) $(LIBS) -o $@
 
 $(FS_O): $(FS_CLI) $(RUBY_SRC)
-		$(FS_CLI) $(PWD) ruby_src/ $(LOAD_PATHS) --start=$(RUBY_SRC)
+		$(FS_CLI) $(PWD) $(SAMPLE_DIR)/ $(LOAD_PATHS) --start=$(RUBY_SRC)
 
 $(FS_CLI) $(FS_LIB): ./fs_cli/src/*.rs ./fs_cli/src/*.rb ./fs_lib/src/*.rs
 		cargo build -v
