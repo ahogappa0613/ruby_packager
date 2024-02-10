@@ -16,4 +16,8 @@ The operation has been tested on M1 Linux and x86_64 Linux.
 - Writing Tests
 - Write documentation
 - Implement options
+  - --compress
+  - --no-stdlib
+- Windows support
+- macOS support
 
