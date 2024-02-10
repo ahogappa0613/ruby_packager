@@ -6,6 +6,15 @@
 extern char *get_patch_require(void);
 extern void ruby_init_ext(const char *name, void (*init)(void));
 extern void Init_fs(void);
+<% exts.each do |(_, func)| %>
+extern void <%= func %>(void);
+<% end %>
+void Init_gems(void)
+{
+  <% exts.each do |(so_path, func)| %>
+    ruby_init_ext("<%= so_path %>", <%= func %>);
+  <% end %>
+}
 
 int main(int argc, char **argv)
 {
@@ -14,6 +23,7 @@ int main(int argc, char **argv)
   ruby_init();
 
   Init_fs();
+  Init_gems();
 
   char *options[] = {"-v", "-e", get_patch_require()};
   void *node = ruby_options(3, options);
