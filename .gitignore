@@ -4,3 +4,8 @@
 firedbg
 bin
 sample.csv
+bundle
+exts/
+main.c
+.bundle
+*.db
