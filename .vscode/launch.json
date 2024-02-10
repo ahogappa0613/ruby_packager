@@ -39,7 +39,7 @@
         }
       },
       "args": [
-        "--start=./ruby_src/test.rb"
+        "--start=./sample/test.rb"
       ],
       "cwd": "${workspaceFolder}"
     },
@@ -75,9 +75,8 @@
       "program": "${workspaceFolder}/target/debug/fs_cli",
       "args": [
         "/workspaces/ruby_packager",
-        "ruby_src/",
-        "/usr/local/rvm/rubies/ruby-3.2.2/lib/ruby/site_ruby/3.2.0",
-        "--start=./ruby_src/test.rb"
+        "sample/",
+        "--start=./sample/test.rb"
       ]
     }
   ]
