@@ -19,10 +19,10 @@ LIBS = $(shell ruby -e'dyn,static=%w[$(MAINLIB) $(EXTLIBS) $(GEMLIBS)].uniq.part
 
 all: $(OUTPUT)
 
-$(OUTPUT): main.c $(RUBY_LIB) $(FS_O) $(FS_LIB)
+$(OUTPUT): $(RUBY_LIB) $(FS_O) $(FS_LIB) main.c
 		gcc -O3 -Wall main.c exts/**/*.o $(OBJS) $(RUBY_HDRS) $(EXT_OBJS) $(FS_LIB) $(LIBS) -o $@
 
-main.c:
+main.c: Gemfile
 		dest_dir/bin/ruby make_main.rb
 
 $(FS_O): $(PWD)/bundle/bundler/setup.rb $(FS_CLI) $(RUBY_SRC)
@@ -34,7 +34,7 @@ $(FS_CLI) $(FS_LIB): ./fs_cli/src/*.rs ./fs_cli/src/*.rb ./fs_lib/src/*.rs
 $(RUBY_LIB): $(RUBY_CONF)
 		$(MAKE) V=1 -C ruby -i install
 
-$(PWD)/bundle/bundler/setup.rb:
+$(PWD)/bundle/bundler/setup.rb: Gemfile
 		dest_dir/bin/ruby -rbundler -rbundler/installer/standalone -e 'system ["dest_dir/bin/bundler", "install", "--standalone"].join(" ")'
 
 $(RUBY_CONF):
