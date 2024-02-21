@@ -1,4 +1,4 @@
-p "test.rb"
+p 'test'
 
 require_relative 'hello'
 
@@ -14,6 +14,8 @@ p JSON.dump(data)
 
 require 'sqlite3'
 
+File.delete("test.db") if File.exist?("test.db")
+
 db = SQLite3::Database.new "test.db"
 
 # Create a table
@@ -23,3 +25,21 @@ rows = db.execute <<-SQL
     val int
   );
 SQL
+
+{
+  "one" => 1,
+  "two" => 2,
+}.each do |pair|
+  db.execute "insert into numbers values ( ?, ? )", pair
+end
+
+require 'sinatra'
+
+set :bind, '0.0.0.0'
+
+get '/' do
+  rows = db.execute <<-SQL
+    select * from numbers;
+SQL
+rows.to_s
+end

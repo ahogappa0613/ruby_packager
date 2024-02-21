@@ -6,6 +6,7 @@
 extern char *get_patch_require(void);
 extern void ruby_init_ext(const char *name, void (*init)(void));
 extern void Init_fs(void);
+extern char *get_start_file_name(void);
 <% exts.each do |(_, func)| %>
 extern void <%= func %>(void);
 <% end %>
@@ -18,21 +19,23 @@ void Init_gems(void)
 
 int main(int argc, char **argv)
 {
-  ruby_sysinit(&argc, &argv);
+  int c = 3;
+
+  // HACK: argv[0] is rewritten and reused by setproctitle()
+  argv[1] = "-e";
+  argv[2] = get_patch_require();
+
+  ruby_sysinit(&c, &argv);
+
   RUBY_INIT_STACK;
   ruby_init();
 
   Init_fs();
   Init_gems();
 
-  char *options[] = {"-v", "-e", get_patch_require()};
-  void *node = ruby_options(3, options);
+  void *node = ruby_options(c, argv);
 
-  int state;
-  if (ruby_executable_node(node, &state))
-  {
-    state = ruby_exec_node(node);
-  }
-
-  return ruby_cleanup(0);
+  // set $0
+  ruby_script(get_start_file_name());
+  return ruby_run_node(node);
 }
