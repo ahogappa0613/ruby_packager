@@ -26,7 +26,7 @@ main.c: Gemfile
 		dest_dir/bin/ruby make_main.rb
 
 $(FS_O): $(PWD)/bundle/bundler/setup.rb $(FS_CLI) $(RUBY_SRC)
-		$(FS_CLI) $(PWD) $(SAMPLE_DIR)/ $(LOAD_PATHS) --start=$(RUBY_SRC)
+		$(FS_CLI) $(PWD) $(SAMPLE_DIR)/ $(LOAD_PATHS) --start=$(RUBY_SRC) --ruby-static=$(RUBY_LIB)
 
 $(FS_CLI) $(FS_LIB): ./fs_cli/src/*.rs ./fs_cli/src/*.rb ./fs_lib/src/*.rs
 		cargo build -v
