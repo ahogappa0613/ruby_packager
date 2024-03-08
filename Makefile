@@ -1,12 +1,12 @@
 OUTPUT = bin
 OBJS = *.o
 FS_O = fs.o
-FS_CLI = target/debug/fs_cli
+FS_CLI = target/debug/kompp-cli
 SAMPLE_DIR = sample
 RUBY_HDRS = $(shell pkg-config --cflags dest_dir/lib/pkgconfig/ruby.pc)
 RUBY_LIB = dest_dir/lib/libruby-static.a
 RUBY_CONF = ruby/configure
-FS_LIB = target/debug/libfs_lib.a
+FS_LIB = target/debug/libkompo_fs.a
 RUBY_SRC = $(SAMPLE_DIR)/test.rb
 EXTS = $(shell ruby -e'puts Dir.glob("ruby/ext/**/extconf.rb").reject { _1 =~ /-test-/ }.reject { _1 =~ /win32/ }.map { File.dirname(_1) }.map { _1.split("ruby/ext/")[1] }.join(",")')
 EXT_OBJS = $(shell ruby -e'puts ["ruby/ext/extinit.o", "ruby/enc/encinit.o", *Dir.glob("ruby/ext/**/*.a"), *Dir.glob("ruby/enc/**/*.a")].join(" ")')

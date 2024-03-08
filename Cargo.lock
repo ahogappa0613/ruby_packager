@@ -158,24 +158,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fs_cli"
-version = "0.1.0"
-dependencies = [
- "ar",
- "clap",
- "glob",
- "memmap2",
- "object",
-]
-
-[[package]]
-name = "fs_lib"
-version = "0.1.0"
-dependencies = [
- "libc",
-]
-
-[[package]]
 name = "glob"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -204,6 +186,24 @@ checksum = "d530e1a18b1cb4c484e6e34556a0d948706958449fca0cab753d649f2bce3d1f"
 dependencies = [
  "equivalent",
  "hashbrown",
+]
+
+[[package]]
+name = "kompo-cli"
+version = "0.1.0"
+dependencies = [
+ "ar",
+ "clap",
+ "glob",
+ "memmap2",
+ "object",
+]
+
+[[package]]
+name = "kompo_fs"
+version = "0.1.0"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

@@ -1,4 +1,4 @@
 [workspace]
 
-members = ["fs_cli", "fs_lib"]
+members = ["kompo_cli", "kompo_fs"]
 resolver = "2"

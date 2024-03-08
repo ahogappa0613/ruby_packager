@@ -2,8 +2,8 @@
 	path = ruby
 	url = https://github.com/ruby/ruby.git
 [submodule "fs_cli"]
-	path = fs_cli
+	path = kompo_cli
 	url = https://github.com/ahogappa0613/fs_cli.git
 [submodule "fs_lib"]
-	path = fs_lib
+	path = kompo_fs
 	url = https://github.com/ahogappa0613/fs_lib.git
