@@ -1,7 +1,7 @@
 OUTPUT = bin
 OBJS = *.o
 FS_O = fs.o
-FS_CLI = target/debug/kompp-cli
+FS_CLI = target/debug/kompo-cli
 SAMPLE_DIR = sample
 RUBY_HDRS = $(shell pkg-config --cflags dest_dir/lib/pkgconfig/ruby.pc)
 RUBY_LIB = dest_dir/lib/libruby-static.a
@@ -20,7 +20,7 @@ LIBS = $(shell ruby -e'dyn,static=%w[$(MAINLIB) $(EXTLIBS) $(GEMLIBS)].uniq.part
 all: $(OUTPUT)
 
 $(OUTPUT): $(RUBY_LIB) $(FS_O) $(FS_LIB) main.c
-		gcc -O3 -Wall main.c exts/**/*.o $(OBJS) $(RUBY_HDRS) $(EXT_OBJS) $(FS_LIB) $(LIBS) -o $@
+		gcc -O3 -Wall main.c -Ldest_dir/lib exts/**/*.o $(OBJS) $(RUBY_HDRS) $(EXT_OBJS) -lruby-static $(FS_LIB) $(LIBS) -o $@
 
 main.c: Gemfile
 		dest_dir/bin/ruby make_main.rb
@@ -28,7 +28,7 @@ main.c: Gemfile
 $(FS_O): $(PWD)/bundle/bundler/setup.rb $(FS_CLI) $(RUBY_SRC)
 		$(FS_CLI) $(PWD) $(SAMPLE_DIR)/ $(LOAD_PATHS) --start=$(RUBY_SRC) --ruby-static=$(RUBY_LIB)
 
-$(FS_CLI) $(FS_LIB): ./fs_cli/src/*.rs ./fs_cli/src/*.rb ./fs_lib/src/*.rs
+$(FS_CLI) $(FS_LIB): ./kompo_cli/src/*.rs ./kompo_cli/src/*.rb ./kompo_fs/src/*.rs
 		cargo build -v
 
 $(RUBY_LIB): $(RUBY_CONF)
